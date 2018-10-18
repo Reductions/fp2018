@@ -1,14 +1,25 @@
 #lang racket/base
 
-(provide ++ --)
+(provide ++ -- % // natural? eps)
 
 (require rackunit)
+(require racket/math)
 
 (define [++ n]
   (+ n 1))
 
 (define [-- n]
   (- n 1))
+
+(define % modulo)
+
+(define // quotient)
+
+(define (natural? n)
+  (and (integer? n)
+       (>= n 0)))
+
+(define eps (expt 0.1 6))
 
 (module+ test
   ; Testing ++
