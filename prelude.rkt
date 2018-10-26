@@ -1,6 +1,6 @@
 #lang racket/base
 
-(provide ++ -- % // natural? eps)
+(provide ++ -- % // natural? devides? eps)
 
 (require rackunit)
 (require racket/math)
@@ -18,6 +18,9 @@
 (define (natural? n)
   (and (integer? n)
        (>= n 0)))
+
+(define [devides? divisor dividend]
+  (= (% dividend divisor) 0))
 
 (define eps (expt 0.1 6))
 

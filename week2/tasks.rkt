@@ -133,15 +133,27 @@
   (define [do-reverse current reversed]
     (if (equal? current 0)
         reversed
-        (let* ([last-digit (% current 10)]
-               [next (// current 10)]
-               [new-reversed (+ (* reversed 10)
-                                last-digit)]
+        (let* ([last-digit (last-digit-of current)]
+               [next (remove-last-digit-of current)]
+               [new-reversed (add-as-last-digit-to
+                              last-digit
+                              reversed)]
                )
           (do-reverse next new-reversed)
           )))
 
     (do-reverse n 0))
+
+(define [add-as-last-digit-to digit number]
+  (+ (* number 10)
+     digit))
+
+(define [last-digit-of n]
+  (% n 10))
+
+(define [remove-last-digit-of n]
+  (// n 10))
+
 
 
 (define-test-suite test-revers-nat
@@ -167,6 +179,122 @@
     (check-true (palindrom? 123454321))]
   )
 
+;; Task 7
+(define [divisors-sum n]
+  (let ([half-n (+ (// n 2) 1)]
+        )
+    (define [for i sum]
+      (if [= i half-n]
+          sum
+          (for (++ i) (if [devides? i n]
+                          (+ sum i)
+                          sum))))
+    (for 1 0)))
+
+
+(define-test-suite test-devisor-sum
+  [test-case "of 1"
+    (check-equal? (divisors-sum 1) 0)]
+  [test-case "of prime is 1"
+    (check-equal? (divisors-sum 7) 1)]
+  [test-case "of 26"
+    (check-equal? (divisors-sum 28) 28)]
+  )
+
+;; Task 8
+(define [perfect? n]
+  (= n (divisors-sum n)))
+
+(define-test-suite test-perfect?
+  [test-case "primes are not perfect"
+    (check-false (perfect? 2))
+    (check-false (perfect? 3))
+    (check-false (perfect? 5))
+    (check-false (perfect? 111))]
+  [test-case "the first 4 perfect numbers"
+    (check-true (perfect? 6))
+    (check-true (perfect? 28))
+    (check-true (perfect? 496))
+    (check-true (perfect? 8128))]
+  [test-case "1 is not perfect"
+    (check-false (perfect? 1))]
+  )
+
+;;Task 9
+
+(define [prime? n]
+  (define [for i]
+    (cond
+      [(= i n) #t]
+      [(devides? i n) #f]
+      [else (for (+ i 2))]
+      ))
+  (cond
+    [(= n 1) #f]
+    [(= n 2) #t]
+    [(devides? 2 n) #f]
+    [else (for 3)]
+    ))
+
+(define-test-suite test-prime?
+  [test-case "2 is prime"
+    (check-true (prime? 2))]
+  [test-case "1 is not prime"
+    (check-false (prime? 1))]
+  [test-case "evens are not primes"
+    (check-false (prime? 4))
+    (check-false (prime? 6))
+    (check-false (prime? 28))
+    (check-false (prime? 496))
+    (check-false (prime? 8128))]
+  [test-case "first 10 odd primes"
+    (check-true (prime? 3))
+    (check-true (prime? 5))
+    (check-true (prime? 7))
+    (check-true (prime? 11))
+    (check-true (prime? 13))
+    (check-true (prime? 17))
+    (check-true (prime? 19))
+    (check-true (prime? 23))
+    (check-true (prime? 29))
+    (check-true (prime? 31))]
+  [test-case "first 5 odd compounds"
+    (check-false (prime? 9))
+    (check-false (prime? 15))
+    (check-false (prime? 21))
+    (check-false (prime? 25))
+    (check-false (prime? 27))]
+  )
+
+;;Task 10
+
+(define [increasing? n]
+  (define [for left prev-last]
+    (cond
+      [(= left 0) #t]
+      [(>= (last-digit-of left) prev-last) #f]
+      [else (for (remove-last-digit-of left) (last-digit-of left))]
+      ))
+
+  ;; Избирам 10 за начало защото няма цифра по-голяма от 10
+  (for n 10))
+
+(define-test-suite test-increasing?
+  [test-case "single digit is always increasing"
+    (check-true (increasing? 1))
+    (check-true (increasing? 3))
+    (check-true (increasing? 8))
+    (check-true (increasing? 0))]
+  [test-case "some tests with bigger increasing numbers"
+    (check-true (increasing? 28))
+    (check-true (increasing? 469))
+    (check-true (increasing? 1238))]
+  [test-case "test with bigger non increasing numbers"
+    (check-false (increasing? 82))
+    (check-false (increasing? 964))
+    (check-false (increasing? 8123))])
+
+
 (module+ test
   (require rackunit/text-ui)
   (run-tests test-fast-exp)
@@ -175,4 +303,8 @@
   (run-tests test-fib)
   (run-tests test-revers-nat)
   (run-tests test-palindrom?)
+  (run-tests test-devisor-sum)
+  (run-tests test-perfect?)
+  (run-tests test-prime?)
+  (run-tests test-increasing?)
   )
