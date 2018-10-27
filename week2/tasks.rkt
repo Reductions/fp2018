@@ -294,6 +294,60 @@
     (check-false (increasing? 964))
     (check-false (increasing? 8123))])
 
+;;Task 11
+
+(define [to-binary n]
+  (define [for shift number bin]
+    (if (= number 0)
+        bin
+        (let* ([new-shift (* shift 10)]
+               [new-number (// number 2)]
+               [next-bin-digit (% number 2)]
+               [new-bin (+ (* next-bin-digit shift)
+                           bin)]
+              )
+          (for new-shift new-number new-bin)))
+    )
+  (for 1 n 0))
+
+(define-test-suite test-to-binary
+  [test-case "0"
+    (check-equal? (to-binary 0) 0)]
+  [test-case "1"
+    (check-equal? (to-binary 1) 1)]
+  [test-case "12345"
+    (check-equal? (to-binary 12345) 11000000111001)]
+  [test-case "930303"
+    (check-equal? (to-binary 930303) 11100011000111111111)]
+  )
+
+
+;;Task 11
+
+(define [to-decimal n]
+  (define [for shift number dec]
+    (if (= number 0)
+        dec
+        (let* ([new-shift (* shift 2)]
+               [new-number (// number 10)]
+               [next-bin-digit (% number 10)]
+               [new-dec (+ (* next-bin-digit shift)
+                           dec)]
+               )
+          (for new-shift new-number new-dec)))
+    )
+  (for 1 n 0))
+
+(define-test-suite test-to-decimal
+  [test-case "0"
+    (check-equal? (to-decimal 0) 0)]
+  [test-case "1"
+    (check-equal? (to-decimal 1) 1)]
+  [test-case "12345"
+    (check-equal? (to-decimal 11000000111001)  12345)]
+  [test-case "930303"
+    (check-equal? (to-decimal 11100011000111111111) 930303)]
+  )
 
 (module+ test
   (require rackunit/text-ui)
@@ -307,4 +361,6 @@
   (run-tests test-perfect?)
   (run-tests test-prime?)
   (run-tests test-increasing?)
+  (run-tests test-to-binary)
+  (run-tests test-to-decimal)
   )
