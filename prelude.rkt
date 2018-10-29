@@ -1,12 +1,16 @@
 #lang racket/base
 
-(provide ++ -- % // natural? divides? eps)
+(provide ++ -- % //
+         natural? divides? eps
+         accumulate accumulate-i
+         )
 
 (require rackunit)
 (require racket/math)
 
 (define % modulo)
 (define // quotient)
+(define (id x) x)
 (define eps (expt 0.1 6))
 
 (define [++ n]
@@ -68,6 +72,40 @@
     (check-false (divides? 2 13))
     (check-false (divides? 2 25))]
   )
+
+(define (accumulate operation
+                    null-value
+                    start
+                    end
+                    transformation
+                    increment)
+  (if (> start end)
+      null-value
+      (operation (transformation start)
+                 (accumulate operation
+                             null-value
+                             (increment start)
+                             end
+                             transformation
+                             increment))
+      ))
+
+(define (accumulate-i operation
+                      null-value
+                      start
+                      end
+                      transformation
+                      increment)
+  (if (> start end)
+      null-value
+      (operation (accumulate-i operation
+                             null-value
+                             (increment start)
+                             end
+                             transformation
+                             increment)
+                 (transformation start))
+      ))
 
 (module+ test
   (require rackunit/text-ui)
