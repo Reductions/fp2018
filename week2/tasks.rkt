@@ -186,7 +186,7 @@
     (define [for i sum]
       (if [= i half-n]
           sum
-          (for (++ i) (if [devides? i n]
+          (for (++ i) (if [divides? i n]
                           (+ sum i)
                           sum))))
     (for 1 0)))
@@ -226,13 +226,13 @@
   (define [for i]
     (cond
       [(= i n) #t]
-      [(devides? i n) #f]
+      [(divides? i n) #f]
       [else (for (+ i 2))]
       ))
   (cond
     [(= n 1) #f]
     [(= n 2) #t]
-    [(devides? 2 n) #f]
+    [(divides? 2 n) #f]
     [else (for 3)]
     ))
 
